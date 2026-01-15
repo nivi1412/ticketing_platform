@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16.8
+    container_name: ticketing_postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: ticketing_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  server:
+    build: .
+    container_name: ticketing_server
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://myuser:mypassword@postgres:5432/ticketing_db"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
